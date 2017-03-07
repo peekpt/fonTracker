@@ -197,10 +197,11 @@ void setup(){
                         wifiNames += WiFi.SSID(i);
                         wifiNames += ",%20";
 
-                        // check for fon netwworks
-                        foundFON = (WiFi.SSID(i) == "FON_ZON_FREE_INTERNET");
+                        // check for  at least on fon netwwork
+                        if (WiFi.SSID(i) == "FON_ZON_FREE_INTERNET") foundFON = true;
 
                 }
+                Serial.println(F("NO Foneras around! :("));
                 if (!!!foundFON) sleepNow(false); // no FON, no fun :(
                 // contruct the JSON data
                 // google needs a POST with a json body with all networks in a array
