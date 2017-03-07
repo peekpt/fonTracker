@@ -19,13 +19,14 @@ Como todo o serviço gratuito terá os seus dados de rastreio partilhados online
 
 
 ###Upload do Firmware
-Para flashar os módulos tradicionais como o ESP-12E terá de ter um adaptador série TTL-USB de 3.3v. Pode optar por módulos que contém já o adaptador ttl como o nodemcu, ou o Wemos, tendo em conta que irão esgotar mais rapidamente a bateria devido aos componentes extra.
+Para flashar os módulos tradicionais como o ESP-12E terá de ter um adaptador série TTL-USB de 3.3v. Pode optar por módulos que contém já o adaptador ttl como o nodemcu, ou o Wemos, tendo em conta que irão esgotar mais rapidamente a bateria devido aos componentes extra. **O pino GPIO16 deve estar ligado ao reset** para que função wake funcione.
+
 ![](images/esquema.png)
+
 Pode flashar compilando o software com o Arduino ou mais facilmente pela consola usando o [Esptool](https://github.com/espressif/esptool) (o firmware encontra-se em /bin)
 ```
 esptool.py --port <PORTA COM> write_flash -fm qio -fs 8m 0x00000 firmware.bin 
 ```
-
 
 
 ###Preparação
