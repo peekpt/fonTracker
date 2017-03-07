@@ -82,7 +82,7 @@ https://dweet.io/get/dweets/for/o-meu-bobi-e-lindo
 
 ###Consumos e bateria:
 
-O módulo ESP-12E em modo *deep sleep* tem um consumo de 15µAH aproximadamente, sendo que o consumo médio ronda ligado ronda 0s 90mAH. O tempo médio de cada beacon são 40 segundos.
+O módulo ESP-12E em modo *deep sleep* tem um consumo de 15µAH aproximadamente, sendo que o consumo médio ligado ronda os 90mAH. O tempo médio de cada beacon são 40 segundos.
 
 #####Exemplo com uma bateria de 1400mAh:
 O valor em *sleep* pode ser ignorado porque é demasiado baixo. Com o intervalo de 10 em 10 minutos (6 x por hora) serão 40s x 6 = 240s ou 4m, ou 4/60 horas de consumo numa hora. Agora calculamos 4/60H x 90mAH = 6mA numa hora de consumo. Para sabermos o numero de horas 1440/6 = 240 horas ou 10 dias.
