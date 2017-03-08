@@ -1,7 +1,10 @@
 ##ESP8266 Fon WiFi tracker
-É um rastrador que usa um módulo WiFi (ESP8266) para se ligar às redes FON\_ZON\_FREE\_INTERNET e ter acesso à internet, geolocalizar-se por rede WiFi e enviar a localização para um dashboard online. Só funciona em Portugal.
-![](images/esp12e.jpg) ![](images/fon.png)
 
+
+![Tracker com bateria](images/tracker.jpg)
+
+É um rastrador que usa um módulo WiFi (ESP8266) para se ligar às redes FON\_ZON\_FREE\_INTERNET e ter acesso à internet, geolocalizar-se por rede WiFi e enviar a localização para um dashboard online. Só funciona em Portugal.
+![](images/esp12e.jpg) ![](images/fon.png) 
 
 
 ###Requisitos:
@@ -10,6 +13,8 @@
 - 1 chave da GoogleAPI 
 - Escolher id do seu dispositivo
 - 1 conta em Freeboard.io
+
+
 
 
 ###Funcionamento:
@@ -88,6 +93,19 @@ O módulo ESP-12E em modo *deep sleep* tem um consumo de 15µAH aproximadamente,
 #####Exemplo com uma bateria de 1400mAh:
 O valor em *sleep* pode ser ignorado porque é demasiado baixo. Com o intervalo de 10 em 10 minutos (6 x por hora) serão 40s x 6 = 240s ou 4m, ou 4/60 horas de consumo numa hora. Agora calculamos 4/60H x 90mAH = 6mA numa hora de consumo. Para sabermos o numero de horas 1440/6 = 240 horas ou 10 dias.
 Se passarmos a optar pelo beacon de hora em hora passamos a ter 2 meses de bateria.
+
+
+###LED
+
+O código está configurado para piscar o led em GPIO-2 do ESP-12E Se usar um módulo diferente, poderá ter de modificar o código.
+
+|  Significado | LED (pisca)  |
+|---         |---|---|---|---|
+| Falhou e entrou em sleep | 4x |  
+| Enviou as coordenadas e entrou em sleep |  10x | 
+| Repetiu um processo   |  1x |
+| Passou ao processo seguinte | 2x  |
+| Entrou no modo de programação  |  20x |
 
 
 
