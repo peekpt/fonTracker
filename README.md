@@ -1,13 +1,13 @@
 ##ESP8266 Fon WiFi tracker
 
+![](images/intro.png)
+
+
+É um rastrador que usa um módulo WiFi (ESP8266) para se ligar às redes FON\_ZON\_FREE\_INTERNET e ter acesso à internet, geolocalizar-se por rede WiFi e enviar a localização para um dashboard online. Só funciona em Portugal.
 
 ![Tracker com bateria](images/tracker.jpg)
 
-É um rastrador que usa um módulo WiFi (ESP8266) para se ligar às redes FON\_ZON\_FREE\_INTERNET e ter acesso à internet, geolocalizar-se por rede WiFi e enviar a localização para um dashboard online. Só funciona em Portugal.
-![](images/esp12e.jpg) ![](images/fon.png) 
-
-
-###Requisitos:
+##Requisitos
 
 - 1 conta activa da Fon
 - 1 chave da GoogleAPI 
@@ -17,13 +17,13 @@
 
 
 
-###Funcionamento:
+##Funcionamento
 
 Apenas com um pequeno módulo como o ESP-12E (1,80€) é possível rastrear por WiFi por ex: o seu automóvel ou o seu animal. O rastreador permite o uso de bateria poupando ao máximo possível em modo sleep. Pode controlar o intervalo de tempo entre os *beacons* sendo que maior a duração bateria quanto menos enviar. Os dados são enviados para serem exibidos um conhecido dashboard online, o freeboard.io.
 Como todo o serviço gratuito terá os seus dados de rastreio partilhados online de forma anónima, o que não deve ser problema para a maior parte das pessoas. Os dados são armazenados por um dia.
 
 
-###Upload do Firmware
+##Upload do Firmware
 Para flashar os módulos tradicionais como o ESP-12E terá de ter um adaptador série TTL-USB de 3.3v. Pode optar por módulos que contém já o adaptador ttl como o nodemcu, ou o Wemos, tendo em conta que irão esgotar mais rapidamente a bateria devido aos componentes extra. **O pino GPIO16 deve estar ligado ao reset** para que função wake funcione.
 
 ![](images/esquema.png)
@@ -34,7 +34,7 @@ esptool.py --port <PORTA COM> write_flash -fm qio -fs 8m 0x00000 firmware.bin
 ```
 
 
-###Preparação
+##Preparação
 
 - Conta da Fon - Terá que ter uma conta Fon que esteja activa para aceder aos routers da NOS. (A conta NOS, não funciona).
 - Chave API - Para a geolocalização crie uma conta em [Google Maps APIs](https://developers.google.com/maps/documentation/geolocation/get-api-key) e crie uma APIKey
@@ -43,14 +43,21 @@ esptool.py --port <PORTA COM> write_flash -fm qio -fs 8m 0x00000 firmware.bin
 
 
 
-###Configurar o Tracker
-Depois de *Flashar* o firmware para aceder ao modo de programação terá **depois de o ligar**  em 3 segundos colocar o Pino 0 a nível baixo *GND* (o mesmo pino que é usado para por em modo flash)
+##Configurar o Tracker
+Depois de *Flashar* o firmware para aceder ao modo de configuração  há um espaço de 4 segundos após um reset, sendo que seja necessário colocar momentaneamente (1 clique) o GPIO0 a nível baixo *GND* (o mesmo pino que é usado para por em modo flash). Sendo que dois cliques apaga a configuração.
+
+Quando não há configuração o tracker entra automáticamente no modo configuração desligando-se ao fim de 10 minutos.
+
+Nota: O led neste modo pisca muitas vezes
+
 De seguida aceda no seu browser ao ip 192.168.1.1 para gravar os seus dados:
 
 ![](images/config.png)
 
+Assim que gravar a configuração o led pisca depressa por momentos e faz o reset ao módulo.
 
-###Criar o Dashboard
+
+##Criar o Dashboard
 
 ![](images/freeboard_create_dashboard.png)
 
@@ -63,21 +70,23 @@ Assim que entrar no dashboard que criou adicione um datasource.
 
 De seguida costumize o dashboard à sua maneira adicionando blocos e plugins usando as variáveis do seu datasource.
 ![](images/dashboard.png)
-#####Variáveis do Datasource:
-- lt - latitude
-- ln - longitude
-- ac - accuracy (precisão em metros)
-- bt - nível da bateria (volts)
-- dt - data do último beacon
-- nt - número de redes Wifi encontradas
-- wf - lista em texto das redes Wifi encontradas
+###Variáveis do Datasource
+```
+lt - latitude
+ln - longitude
+ac - accuracy (precisão em metros)
+bt - nível da bateria (volts)
+dt - data do último beacon
+nt - número de redes Wifi encontradas
+wf - lista em texto das redes Wifi encontradas
+```
 
 Se chegou até aqui, parabéns! Disfrute do seu tracker!
 
 Partilhe com os seus amigos.
 
 
-###Dados:
+##Dados
 
 Se quiser acompanhar mais ao pormenor os dados em formato JSON do seu tracker pode fazê-lo no site [dweet.io](https://dweet.io)
 
@@ -86,7 +95,7 @@ https://dweet.io/get/latest/dweet/for/o-meu-bobi-e-lindo
 https://dweet.io/get/dweets/for/o-meu-bobi-e-lindo
 
 
-###Consumos e bateria:
+##Consumos e bateria
 
 O módulo ESP-12E em modo *deep sleep* tem um consumo de 15µAH aproximadamente, sendo que o consumo médio ligado ronda os 90mAH. O tempo médio de cada beacon são 40 segundos.
 
@@ -97,15 +106,26 @@ Se passarmos a optar pelo beacon de hora em hora passamos a ter 2 meses de bater
 
 ###LED
 
-O código está configurado para piscar o led em GPIO-2 do ESP-12E Se usar um módulo diferente, poderá ter de modificar o código.
+O programa está configurado para piscar o led do ESP-12E em GPIO-2.
 
-|  Significado | LED (pisca)  |
+|  Significado | Código LED  |
 |---         |---|---|---|---|
-| Falhou e entrou em sleep | 4x |  
 | Enviou as coordenadas e entrou em sleep |  10x | 
-| Repetiu um processo   |  1x |
-| Passou ao processo seguinte | 2x  |
-| Entrou no modo de programação  |  20x |
+| Falhou um processo e entrou em sleep | 4x |  
+| Repetiu um processo   |  2x |
+| Passou ao processo seguinte | 1x  |
+| Entrou no modo de programação  |  1000x |
+| Gravou a configuração | rápido 2s |
+| Intervalo para aceder à configuração | fixo|
+
+
+###Botão de Configuração GPIO-0
+Só funciona durante 4 segundos logo após um reset.
+
+|Função| Botão|
+|---|---|
+|Configurar o Tracker | 1 Clique|
+|Limpar a configuração| 2 Cliques| 
 
 
 
