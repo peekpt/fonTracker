@@ -82,6 +82,8 @@ ADC_MODE(ADC_VCC);
 float readVCC();
 
 void resetConfig();
+
+
 void setup(){
         pinMode(0,INPUT); // program mode pin
         pinMode(2,OUTPUT); // led pin
@@ -128,7 +130,7 @@ void setup(){
 
                         while(millis() - buttonMillis < 750 ) {
                             delay(100);
-                            if (digitalRead(0) == LOW) {
+                            if (digitalRead(0) == LOW && _pass_.length() > 0) {
                               // reset config
                               resetConfig();
                               digitalWrite(LEDPIN, LOW);
@@ -219,8 +221,13 @@ void setup(){
                         if (WiFi.SSID(i) == "FON_ZON_FREE_INTERNET") foundFON = true;
 
                 }
-                Serial.println(F("NO Foneras around! :("));
-                if (!!!foundFON) sleepNow(false); // no FON, no fun :(
+
+                if (!!!foundFON) {
+                  Serial.println(F("NO Foneras around! :("));
+                sleepNow(false);
+
+
+                }  // no FON, no fun :(
                 // contruct the JSON data
                 // google needs a POST with a json body with all networks in a array
 
@@ -256,7 +263,7 @@ void setup(){
 
                 if ( internet ) {
                         // I haz internet .... :)
-                        blink(1);
+
                         HTTPClient http;
                         http.setTimeout(2000); // 3 seconds...
                                                // send data to google
@@ -374,8 +381,12 @@ void sleepNow(bool status){
         blink((status) ? 10 : 4);
         while(isBlinking){ // don't sleep before blinking
           yield();
+          delay(2);
         }
+        digitalWrite(LEDPIN,HIGH);
         Serial.println(F("ESP8266 in sleep mode"));
+        Serial.end();
+        delay(200); // wait for serial...
         ESP.deepSleep(_interval_ * 60000000);
 }
 
