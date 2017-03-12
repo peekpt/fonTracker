@@ -127,10 +127,13 @@ bool FonPT::auth(String fonUser, String fonPass, String fonSSID) {
         DBG_FON(fonURL);
         DBG_FON("\n");
         httpClient.begin(fonURL, fonFP);
+
         httpClient.collectHeaders(headerkeys,sizeof(headerkeys)/sizeof(headerkeys[0]));
         httpClient.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
-        if(httpClient.POST(String("userName=")+ fonUser + "&Password=" + fonPass)) {
+        int result = httpClient.POST(String("userName=")+ fonUser + "&Password=" + fonPass);
+
+        if(result) {
 
                 if (httpClient.hasHeader("Location")) {
                         loggedInURL = httpClient.header("Location");

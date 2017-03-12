@@ -106,7 +106,7 @@ void setup(){
         html_home += "dweet.io thing name:<br> <input name=\"dweet\" maxlength=\"64\" size=\"64\" type=\"text\" value=\"" + _dweet_ + "\"><br>";
         html_home += "Google geolocate API key<br> <input name=\"apikey\" maxlength=\"64\" size=\"64\" type=\"text\" value=\"" + _apikey_ + "\"><br>";
         html_home += "Beacon Interval:<br> <input name=\"interval\" maxlength=\"4\" type=\"text\" size=\"4\" value=\"" + String(_interval_) + "\"><br>";
-        html_home+= "<input type=\"submit\" name=\"save\"></form>";
+        html_home += "<input type=\"submit\" name=\"save\"></form>";
 
         // flags if the process was successful
         bool success = false;
@@ -192,6 +192,7 @@ void setup(){
         int nNetworks = WiFi.scanNetworks();
         if (nNetworks  < 2) {
                 Serial.println(F("FEW NETWORKS TO GEOLOCATE"));
+                WiFi.disconnect(true);
                 sleepNow(false);
         }  else  {
                 blink(1);
@@ -222,12 +223,12 @@ void setup(){
 
                 }
 
-                if (!!!foundFON) {
+                if (!foundFON) { // no FON, no fun :(
                   Serial.println(F("NO Foneras around! :("));
-                sleepNow(false);
+                  WiFi.disconnect(true);
+                  sleepNow(false);
+                }
 
-
-                }  // no FON, no fun :(
                 // contruct the JSON data
                 // google needs a POST with a json body with all networks in a array
 
@@ -252,20 +253,21 @@ void setup(){
                 int retries_conn = 3;
                 bool internet = false;
                 do {
-                        if (fon.auth(String(_user_), String(_pass_))) {
+                        if (fon.auth(_user_, _pass_)) {
                                 retries_conn = 0;
                                 internet = true;
                         }else {
                                 blink(2);
                                 retries_conn--;
+                                delay(50);
                         }
                 } while (retries_conn != 0);
 
-                if ( internet ) {
+                if (internet) {
                         // I haz internet .... :)
 
                         HTTPClient http;
-                        http.setTimeout(2000); // 3 seconds...
+                        http.setTimeout(3000); // 3 seconds...
                                                // send data to google
                         int googleRetries = 10;
                         do {
@@ -391,12 +393,13 @@ void sleepNow(bool status){
 }
 
 void blink(int blinks) {
+
         if(flips == 0) {
-                while(isBlinking){
-                  yield(); // wait before blink again
-                }
+                // while(isBlinking){
+                //   yield(); // wait before blink again
+                // }
                 digitalWrite(LEDPIN,HIGH);
-                ticker.attach(0.2, blink, blinks);
+                ticker.attach(0.1, blink, blinks);
                 isBlinking = true;
         }
         flips++;
