@@ -1,29 +1,17 @@
 /**
- * Fon Tracker
- *
- * Created on: 06.03.2017
- *
- * Copyright (c) 2017 Paulo Bruckmann. All rights reserved.
- *
- * All product names brands are property of their respective owners.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
+* @Project Fon Wifi Tracker
+* @Author: Paulo Bruckmann
+* @Date:   20-Feb-2017
+* @Email:  dev76<at>me<dot>com
+* @Last modified by:   Paulo Bruckmann
+* @Last modified time: 13-Mar-2017
+* @License: GPL v2.1
+* @Copyright: (c) 2017 Paulo Bruckmann. All rights reserved.
+*/
 
 
- // google api server sha-1 fingerprint ( may change overtime )
+
+// google api server sha-1 fingerprint ( may change overtime )
 #define GOOGLE_APIS_SERVER_FINGERPRINT "22 37 4D 58 43 F4 A1 24 12 71 2B 74 7A FC 36 FC 24 A0 F0 9D"
 
 #include <Arduino.h>
@@ -55,9 +43,7 @@ struct config_struct {
 config_struct config;
 
 bool dnsLoop = false;
-bool isBlinking = false;
 
-// initiate objects and vars
 FonPT fon;                        // fon library
 Ticker ticker;                    // led ticker
 DNSServer dnsServer;              // servers
@@ -80,7 +66,6 @@ void saveConfig();
 ADC_MODE(ADC_VCC);
 #define BATT_OFFSET 0.4 // fine tune the vcc readings
 float readVCC();
-
 void resetConfig();
 
 
@@ -95,7 +80,7 @@ void setup(){
 
         // this will prevent crazy chars on the textfields on first use
         if (_firstBoot_ != NOT_FIRST_BOOT) { // save first boot values
-              resetConfig();
+                resetConfig();
         }
 
         //prepare html config page
@@ -113,9 +98,9 @@ void setup(){
 
 /* PROGRAM MODE WIFI SSID "TRACKER" Browse IP->192.168.1.1
 
-  After reset Program mode can be activated with connecting GND to GPIO0
-  Single click - Enter program mode;
-  Double click - Reset Config;
+   After reset Program mode can be activated with connecting GND to GPIO0
+   Single click - Enter program mode;
+   Double click - Reset Config;
 
  */
         int tout = 100;
@@ -124,23 +109,23 @@ void setup(){
                         tout--;
                         delay (40);
                 } else  {
-                    digitalWrite(LEDPIN, HIGH);
+                        digitalWrite(LEDPIN, HIGH);
                         delay (100);
                         float buttonMillis = millis();
 
                         while(millis() - buttonMillis < 750 ) {
-                            delay(100);
-                            if (digitalRead(0) == LOW && _pass_.length() > 0) {
-                              // reset config
-                              resetConfig();
-                              digitalWrite(LEDPIN, LOW);
-                              for (int l=0; l<50; l++){
-                                delay(50);
-                                digitalWrite(LEDPIN,!digitalRead(LEDPIN));
-                              }
-                              delay(1000);
-                              ESP.restart();
-                            }
+                                delay(100);
+                                if (digitalRead(0) == LOW && _pass_.length() > 0) {
+                                        // reset config
+                                        resetConfig();
+                                        digitalWrite(LEDPIN, LOW);
+                                        for (int l=0; l<50; l++) {
+                                                delay(50);
+                                                digitalWrite(LEDPIN,!digitalRead(LEDPIN));
+                                        }
+                                        delay(1000);
+                                        ESP.restart();
+                                }
                         }
 
                         // ** PROGRAM MODE **
@@ -181,8 +166,8 @@ void setup(){
         }
 
         // ** TRACKER MODE **
+        digitalWrite(LEDPIN,HIGH);
 
-        blink(1);
         // make sure to disconnect from other networks before scan
         WiFi.mode(WIFI_STA);
         WiFi.disconnect(true);
@@ -195,7 +180,7 @@ void setup(){
                 WiFi.disconnect(true);
                 sleepNow(false);
         }  else  {
-                blink(1);
+
                 // if more than 2 networks continue
                 Serial.println();
                 Serial.print(nNetworks);
@@ -224,9 +209,9 @@ void setup(){
                 }
 
                 if (!foundFON) { // no FON, no fun :(
-                  Serial.println(F("NO Foneras around! :("));
-                  WiFi.disconnect(true);
-                  sleepNow(false);
+                        Serial.println(F("NO Foneras around! :("));
+                        WiFi.disconnect(true);
+                        sleepNow(false);
                 }
 
                 // contruct the JSON data
@@ -271,22 +256,22 @@ void setup(){
                                                // send data to google
                         int googleRetries = 10;
                         do {
-                                blink(1);
+
                                 String googleUrl = "https://www.googleapis.com/geolocation/v1/geolocate?key=";
                                 googleUrl += _apikey_;
+
                                 Serial.println(googleUrl);
                                 Serial.println(jsonData);
                                 Serial.println(F("Requesting coordinates from google"));
                                 http.begin(googleUrl, GOOGLE_APIS_SERVER_FINGERPRINT);
-                                //http.begin(googleUrl);
+
                                 http.addHeader("Content-Type", "application/json");
-                                //http.addHeader("Content-Length",String(jsonData.length()));
 
                                 const char * hKeys[] = {"Date"};
                                 size_t hKeyssize = sizeof(hKeys)/sizeof(char*);
                                 http.collectHeaders(hKeys,hKeyssize);
-
                                 int status = http.POST(jsonData);
+
                                 if (status == HTTP_CODE_OK) {
                                         // parse payload json
                                         String payloadJson =  http.getString();
@@ -309,7 +294,7 @@ void setup(){
                                         // dweeting to dweet.io
                                         int dweetRetries = 10;
                                         do {
-                                                blink(1);
+
                                                 wifiNames.replace(" ", "%20"); // be sure to be no spaces in url
                                                 Serial.print("Publishing to dweet.io -> ");
                                                 String dweet = "https://dweet.io/dweet/for/";
@@ -361,7 +346,7 @@ void loop() {
         }
         webServer.handleClient();
         if (millis()-watchdog > 600000) {
-          ESP.deepSleep(0);
+                ESP.deepSleep(0);
         }
 }
 
@@ -379,36 +364,34 @@ String urlDecode(String input) {
 }
 
 void sleepNow(bool status){
-// blinks  4x for error 10x for success
-        blink((status) ? 10 : 4);
-        while(isBlinking){ // don't sleep before blinking
-          yield();
-          delay(2);
-        }
+        // blinks  4x for error 10x for success
+
         digitalWrite(LEDPIN,HIGH);
         Serial.println(F("ESP8266 in sleep mode"));
+        blink((status) ? 10 : 4);
+        delay((status) ? 4000 : 2000);
         Serial.end();
-        delay(200); // wait for serial...
+
         ESP.deepSleep(_interval_ * 60000000);
 }
 
 void blink(int blinks) {
 
         if(flips == 0) {
-                // while(isBlinking){
-                //   yield(); // wait before blink again
-                // }
+
                 digitalWrite(LEDPIN,HIGH);
                 ticker.attach(0.1, blink, blinks);
-                isBlinking = true;
+
+
         }
         flips++;
-        if (flips > blinks * 2) {
+        if (flips > blinks * 2 ) {
                 ticker.detach();
                 flips = 0;
-                digitalWrite(LEDPIN,HIGH);
-                isBlinking = false;
+                digitalWrite(LEDPIN,HIGH); // turn off led
+
         }else{
+                //invert pin
                 digitalWrite(LEDPIN,!digitalRead(2));
         }
 }
@@ -468,11 +451,11 @@ void saveConfig(){
 }
 
 void resetConfig(){
-  _firstBoot_  = NOT_FIRST_BOOT;
-  _user_ = "your fon email";
-  _pass_ = "";
-  _apikey_ = "google geolocate api key";
-  _dweet_ = "your tracker unique name";
-  _interval_ = 5;
-  saveConfig();
+        _firstBoot_  = NOT_FIRST_BOOT;
+        _user_ = "your fon email";
+        _pass_ = "";
+        _apikey_ = "google geolocate api key";
+        _dweet_ = "your tracker unique name";
+        _interval_ = 5;
+        saveConfig();
 }

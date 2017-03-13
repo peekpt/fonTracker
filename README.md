@@ -111,9 +111,8 @@ O programa está configurado para piscar o led do ESP-12E em GPIO-2.
 |  Significado | Código LED  |
 |---         |---|---|---|---|
 | Enviou as coordenadas e entrou em sleep |  10x | 
-| Falhou um processo e entrou em sleep | 4x |  
-| Repetiu um processo   |  2x |
-| Passou ao processo seguinte | 1x  |
+| Falhou as tentativas dum processo e entrou em sleep | 4x |  
+| Nova tentativa um processo   |  2x |
 | Entrou no modo de programação  |  1000x |
 | Gravou a configuração | rápido 2s |
 | Intervalo para aceder à configuração | fixo|
