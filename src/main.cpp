@@ -1,15 +1,13 @@
 /**
-* @Project Fon Wifi Tracker
-* @Author: Paulo Bruckmann
-* @Date:   20-Feb-2017
-* @Email:  dev76<at>me<dot>com
+ * @Project Fon Wifi Tracker
+ * @Author: Paulo Bruckmann
+ * @Date:   20-Feb-2017
+ * @Email:  dev76<at>me<dot>com
 * @Last modified by:   Paulo Bruckmann
 * @Last modified time: 13-Mar-2017
-* @License: GPL v2.1
-* @Copyright: (c) 2017 Paulo Bruckmann. All rights reserved.
-*/
-
-
+ * @License: GPL v2.1
+ * @Copyright: (c) 2017 Paulo Bruckmann. All rights reserved.
+ */
 
 // google api server sha-1 fingerprint ( may change overtime )
 #define GOOGLE_APIS_SERVER_FINGERPRINT "22 37 4D 58 43 F4 A1 24 12 71 2B 74 7A FC 36 FC 24 A0 F0 9D"
@@ -20,12 +18,11 @@
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
 #include <Ticker.h>
-
 #define LEDPIN 2
+
 
 float watchdog = millis(); // prevent to be on for a long time
 
-// global vars store config values
 String _user_,_pass_,_apikey_,_dweet_;
 int _interval_,_firstBoot_;
 
@@ -103,7 +100,8 @@ void setup(){
    Double click - Reset Config;
 
  */
-        int tout = 100;
+// handle button behaviour
+        int tout = 100; // timeout will be 4seconds 100x40
         while (tout != 0) {
                 if (digitalRead(0) == HIGH && _pass_.length() > 0) {
                         tout--;
@@ -368,7 +366,7 @@ void sleepNow(bool status){
 
         digitalWrite(LEDPIN,HIGH);
         Serial.println(F("ESP8266 in sleep mode"));
-        blink((status) ? 10 : 4);
+        blink((status) ? 6 : 3);
         delay((status) ? 4000 : 2000);
         Serial.end();
 
@@ -376,16 +374,11 @@ void sleepNow(bool status){
 }
 
 void blink(int blinks) {
-
         if(flips == 0) {
-
                 digitalWrite(LEDPIN,HIGH);
-                ticker.attach(0.1, blink, blinks);
+                ticker.attach(0.25, blink, blinks);
 
-
-        }
-        flips++;
-        if (flips > blinks * 2 ) {
+        }else if (flips > blinks * 2 ) {
                 ticker.detach();
                 flips = 0;
                 digitalWrite(LEDPIN,HIGH); // turn off led
@@ -394,6 +387,7 @@ void blink(int blinks) {
                 //invert pin
                 digitalWrite(LEDPIN,!digitalRead(2));
         }
+        flips++;
 }
 
 float readVCC(){
