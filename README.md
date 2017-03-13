@@ -1,3 +1,15 @@
+<!--
+@Author: Paulo Bruckmann
+@Date:   13-Mar-2017
+@Email:  dev76<at>me<dot>com
+@Last modified by:   Paulo Bruckmann
+@Last modified time: 13-Mar-2017
+@License: GPL v2.1
+@Copyright: (c) 2017 Paulo Bruckmann. All rights reserved.
+-->
+
+
+
 ##ESP8266 Fon WiFi tracker
 
 ![](images/intro.png)
@@ -10,7 +22,7 @@
 ##Requisitos
 
 - 1 conta activa da Fon
-- 1 chave da GoogleAPI 
+- 1 chave da GoogleAPI
 - Escolher id do seu dispositivo
 - 1 conta em Freeboard.io
 
@@ -30,7 +42,7 @@ Para flashar os módulos tradicionais como o ESP-12E terá de ter um adaptador s
 
 Pode flashar compilando o software com o Arduino ou mais facilmente pela consola usando o [Esptool](https://github.com/espressif/esptool) (o firmware encontra-se em /bin)
 ```
-esptool.py --port <PORTA COM> write_flash -fm qio -fs 8m 0x00000 firmware.bin 
+esptool.py --port <PORTA COM> write_flash -fm qio -fs 8m 0x00000 firmware.bin
 ```
 
 
@@ -110,8 +122,8 @@ O programa está configurado para piscar o led do ESP-12E em GPIO-2.
 
 |  Significado | Código LED  |
 |---         |---|---|---|---|
-| Enviou as coordenadas e entrou em sleep |  10x | 
-| Falhou as tentativas dum processo e entrou em sleep | 4x |  
+| Enviou as coordenadas e entrou em sleep |  6x |
+| Falhou as tentativas dum processo e entrou em sleep | 3x |  
 | Nova tentativa um processo   |  2x |
 | Entrou no modo de programação  |  1000x |
 | Gravou a configuração | rápido 2s |
@@ -124,17 +136,4 @@ Só funciona durante 4 segundos logo após um reset.
 |Função| Botão|
 |---|---|
 |Configurar o Tracker | 1 Clique|
-|Limpar a configuração| 2 Cliques| 
-
-
-
-
-
-
-
-
-
-
-
-
-
+|Limpar a configuração| 2 Cliques|
